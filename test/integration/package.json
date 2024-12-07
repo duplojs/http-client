@@ -5,7 +5,7 @@
     "test:types": "tsc"
   },
   "dependencies": {
-    "@duplojs/to": "file:../..",
+    "@duplojs/http-client": "file:../..",
 	"@duplojs/core": "^0.21.0",
     "@duplojs/node": "^0.3.0"
   }

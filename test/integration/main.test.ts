@@ -1,7 +1,7 @@
 import { existsSync } from "fs";
 import { lstat, mkdir, readFile, rm } from "fs/promises";
 import { server } from "./main";
-import { DuploTo } from "@duplojs/to";
+import { HttpClient } from "@duplojs/http-client";
 import { stringToBytes } from "@duplojs/core";
 
 describe("integration", () => {
@@ -19,12 +19,12 @@ describe("integration", () => {
 		server.close();
 	});
 
-	const duploTo = new DuploTo({
+	const client = new HttpClient({
 		baseUrl: "http://localhost:15159",
 	});
 
 	it("GET /users", async() => {
-		const result1 = await duploTo
+		const result1 = await client
 			.get({ path: "/users" })
 			.IWantInformation("users")
 			.then(({ body }) => body);
@@ -39,7 +39,7 @@ describe("integration", () => {
 		const whenInformation = vi.fn();
 		const whenResponseSuccess = vi.fn();
 
-		const result2 = await duploTo
+		const result2 = await client
 			.get({
 				path: "/users",
 				query: {
@@ -81,7 +81,7 @@ describe("integration", () => {
 	});
 
 	it("POST /users", async() => {
-		const result = await duploTo
+		const result = await client
 			.post({
 				path: "/users",
 				body: {
@@ -110,7 +110,7 @@ describe("integration", () => {
 			}),
 		);
 
-		const result = await duploTo
+		const result = await client
 			.post({
 				path: "/docs",
 				body: formData,

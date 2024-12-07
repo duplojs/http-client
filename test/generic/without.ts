@@ -1,10 +1,10 @@
-import { DuploTo, type Request } from "@scripts/duploTo";
+import { HttpClient, type Request } from "@scripts/httpClient";
 import { type ExpectType } from "@test/utils/expectType";
 import { type Response } from "@scripts/PromiseRequest";
 import { type Route } from "@scripts/route";
 import { type GetRouteByMethod } from "@scripts/index";
 
-const client = new DuploTo();
+const client = new HttpClient();
 
 const user = await client
 	.get({ path: "/users/{userId}" })

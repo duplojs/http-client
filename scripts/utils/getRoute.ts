@@ -1,4 +1,4 @@
-import { type Request } from "@scripts/duploTo";
+import { type Request } from "@scripts/httpClient";
 import { type Response } from "@scripts/PromiseRequest";
 import { type Route } from "@scripts/route";
 

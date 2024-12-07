@@ -1,10 +1,10 @@
 {
-  "name": "@duplojs/to",
+  "name": "@duplojs/http-client",
   "version": "0.0.0",
   "author": "mathcovax",
   "license": "MIT",
   "type": "module",
-  "repository": "https://github.com/duplojs/to",
+  "repository": "https://github.com/duplojs/http-client",
   "scripts": {
     "build": "rollup --config && tsc-alias -p tsconfig.build.json",
     "test:tu": "vitest --coverage",
