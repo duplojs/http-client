@@ -1,4 +1,4 @@
-export * from "./duploTo";
+export * from "./httpClient";
 export * from "./PromiseRequest";
 export * from "./hook";
 export * from "./WrongResponseError";

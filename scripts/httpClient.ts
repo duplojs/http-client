@@ -3,7 +3,7 @@ import { type Interceptor, PromiseRequest } from "./PromiseRequest";
 import { type Route } from "./route";
 import { type GetRouteByMethod, type GetResponseFromRequest } from "./utils/getRoute";
 
-export interface InitDuploTo {
+export interface InitHttpClient {
 	baseUrl?: string;
 	keyToInformation?: string;
 }
@@ -15,7 +15,7 @@ export type Request<
 > = Omit<GenericRoute, "response">
 	& Omit<RequestInit, "method" | "body" | "headers">;
 
-export class DuploTo<
+export class HttpClient<
 	GenericRoute extends Route = Route,
 > {
 	public baseUrl: string;
@@ -31,7 +31,7 @@ export class DuploTo<
 		response: (response) => response,
 	};
 
-	public constructor(params: InitDuploTo = {}) {
+	public constructor(params: InitHttpClient = {}) {
 		this.baseUrl = params.baseUrl ?? "";
 
 		this.keyToInformation = params.keyToInformation ?? "information";

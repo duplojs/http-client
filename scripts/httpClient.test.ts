@@ -1,4 +1,4 @@
-import { DuploTo } from "./duploTo";
+import { HttpClient } from "./httpClient";
 import { PromiseRequest } from "./PromiseRequest";
 
 vi.mock(
@@ -8,33 +8,33 @@ vi.mock(
 	}),
 );
 
-describe("duploTo", () => {
+describe("httpClient", () => {
 	it("configuration", () => {
-		const duploTo = new DuploTo({
+		const client = new HttpClient({
 			baseUrl: "https://localhost:3000/test",
 			keyToInformation: "info",
 		});
 
-		expect(duploTo.baseUrl).toBe("https://localhost:3000/test");
-		expect(duploTo.keyToInformation).toBe("info");
+		expect(client.baseUrl).toBe("https://localhost:3000/test");
+		expect(client.keyToInformation).toBe("info");
 
-		expect(duploTo.interceptor.request(<any>"test")).toBe("test");
-		expect(duploTo.interceptor.response(<any>"test")).toBe("test");
+		expect(client.interceptor.request(<any>"test")).toBe("test");
+		expect(client.interceptor.response(<any>"test")).toBe("test");
 
 		const cb = (req: any) => req;
-		duploTo.setInterceptor("request", cb);
-		duploTo.setInterceptor("response", cb);
+		client.setInterceptor("request", cb);
+		client.setInterceptor("response", cb);
 
-		expect(duploTo.interceptor.request).toBe(cb);
-		expect(duploTo.interceptor.response).toBe(cb);
+		expect(client.interceptor.request).toBe(cb);
+		expect(client.interceptor.response).toBe(cb);
 	});
 
 	it("request", () => {
-		const duploTo = new DuploTo({
+		const client = new HttpClient({
 			baseUrl: "http://localhost:3000",
 		});
 
-		duploTo.setDefaultRequestParams({
+		client.setDefaultRequestParams({
 			params: {
 				test: "1",
 			},
@@ -45,7 +45,7 @@ describe("duploTo", () => {
 			redirect: "manual",
 		});
 
-		void duploTo.request({
+		void client.request({
 			method: "GET",
 			path: "/users/{userId}",
 		});
@@ -58,7 +58,7 @@ describe("duploTo", () => {
 				toto: "tatat",
 			},
 			hooks: new Set(),
-			interceptor: duploTo.interceptor,
+			interceptor: client.interceptor,
 			keyToInformation: "information",
 			mode: "cors",
 			params: {
@@ -75,16 +75,16 @@ describe("duploTo", () => {
 	});
 
 	it("GET", () => {
-		const duploTo = new DuploTo();
+		const client = new HttpClient();
 
-		void duploTo.get({ path: "/users/{userId}" });
+		void client.get({ path: "/users/{userId}" });
 
 		expect(PromiseRequest).toHaveBeenLastCalledWith({
 			baseUrl: "",
 			body: undefined,
 			headers: {},
 			hooks: new Set(),
-			interceptor: duploTo.interceptor,
+			interceptor: client.interceptor,
 			keyToInformation: "information",
 			method: "GET",
 			params: {},
@@ -95,9 +95,9 @@ describe("duploTo", () => {
 	});
 
 	it("POST", () => {
-		const duploTo = new DuploTo();
+		const client = new HttpClient();
 
-		void duploTo.post({
+		void client.post({
 			path: "/users/{userId}",
 			body: "toto",
 		});
@@ -107,7 +107,7 @@ describe("duploTo", () => {
 			body: "toto",
 			headers: {},
 			hooks: new Set(),
-			interceptor: duploTo.interceptor,
+			interceptor: client.interceptor,
 			keyToInformation: "information",
 			method: "POST",
 			params: {},
@@ -118,9 +118,9 @@ describe("duploTo", () => {
 	});
 
 	it("PUT", () => {
-		const duploTo = new DuploTo();
+		const client = new HttpClient();
 
-		void duploTo.put({
+		void client.put({
 			path: "/users/{userId}",
 			body: "toto",
 		});
@@ -130,7 +130,7 @@ describe("duploTo", () => {
 			body: "toto",
 			headers: {},
 			hooks: new Set(),
-			interceptor: duploTo.interceptor,
+			interceptor: client.interceptor,
 			keyToInformation: "information",
 			method: "PUT",
 			params: {},
@@ -141,9 +141,9 @@ describe("duploTo", () => {
 	});
 
 	it("PATCH", () => {
-		const duploTo = new DuploTo();
+		const client = new HttpClient();
 
-		void duploTo.patch({
+		void client.patch({
 			path: "/users/{userId}",
 			body: "toto",
 		});
@@ -153,7 +153,7 @@ describe("duploTo", () => {
 			body: "toto",
 			headers: {},
 			hooks: new Set(),
-			interceptor: duploTo.interceptor,
+			interceptor: client.interceptor,
 			keyToInformation: "information",
 			method: "PATCH",
 			params: {},
@@ -164,9 +164,9 @@ describe("duploTo", () => {
 	});
 
 	it("DELETE", () => {
-		const duploTo = new DuploTo();
+		const client = new HttpClient();
 
-		void duploTo.delete({
+		void client.delete({
 			path: "/users/{userId}",
 		});
 
@@ -175,7 +175,7 @@ describe("duploTo", () => {
 			body: undefined,
 			headers: {},
 			hooks: new Set(),
-			interceptor: duploTo.interceptor,
+			interceptor: client.interceptor,
 			keyToInformation: "information",
 			method: "DELETE",
 			params: {},
