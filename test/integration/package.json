@@ -1,0 +1,12 @@
+{
+  "name": "test-integration",
+  "type": "module",
+  "scripts": {
+    "test:types": "tsc"
+  },
+  "dependencies": {
+    "@duplojs/to": "file:../..",
+	"@duplojs/core": "^0.21.0",
+    "@duplojs/node": "^0.3.0"
+  }
+}
