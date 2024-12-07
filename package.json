@@ -12,7 +12,7 @@
     "test:tu:update": "vitest --coverage --update",
     "test:types": "npm run test:types:scripts && npm run integration:test:types",
     "test:types:scripts": "tsc",
-	"integration:test:types": "npm -w test/integration run test:types",
+    "integration:test:types": "npm -w test/integration run test:types",
     "test:lint": "eslint",
     "test:lint:fix": "eslint --fix",
     "prepare": "husky"
@@ -20,6 +20,9 @@
   "files": [
     "dist",
     "README.md"
+  ],
+  "workspaces": [
+    "test/integration"
   ],
   "types": "./dist/index.d.ts",
   "exports": {
@@ -29,18 +32,19 @@
       "types": "./dist/index.d.ts"
     }
   },
-  "peerDependencies": {
-    "@duplojs/core": ">=0.21.0 <1.0.0"
-  },
   "devDependencies": {
     "@commitlint/cli": "^19.4.0",
     "@commitlint/config-conventional": "^19.2.2",
+    "@duplojs/core": ">=0.21.0 <1.0.0",
     "@duplojs/eslint": "0.3.0",
+    "@edge-runtime/vm": "^5.0.0",
     "@rollup/plugin-typescript": "^11.1.6",
     "@types/node": "^22.1.0",
     "@vitest/coverage-istanbul": "^2.0.5",
     "eslint": "^9.9.0",
+    "happy-dom": "^15.11.7",
     "husky": "^9.1.4",
+    "jsdom": "^25.0.1",
     "rollup": "^4.22.4",
     "rollup-plugin-esbuild": "^6.1.1",
     "tsc-alias": "^1.8.10",
@@ -49,5 +53,8 @@
     "vite-tsconfig-paths": "^5.0.1",
     "vitest": "^2.0.5"
   },
-  "keywords": []
+  "keywords": [],
+  "dependencies": {
+    "@types/web": "^0.0.183"
+  }
 }

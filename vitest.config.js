@@ -16,6 +16,7 @@ export default defineConfig({
 			exclude: [
 				"**/*.test.ts",
 				"test/utils",
+				"test/generic",
 				"dist",
 			],
 		},
