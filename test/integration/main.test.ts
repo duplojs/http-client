@@ -30,7 +30,7 @@ describe("integration", () => {
 
 	it("GET /users", async() => {
 		const result1 = await client
-			.get("/users")
+			.get("/users", { query: { ignoredUserId: "toto" } })
 			.IWantInformation("users")
 			.then(({ body }) => body);
 

@@ -13,8 +13,8 @@ useBuilder()
 				.default(10),
 			ignoredUserId: zod
 				.string()
-				.default("toto")
-				.toArray(),
+				.toArray()
+				.default(["test"]),
 		},
 	})
 	.cut(

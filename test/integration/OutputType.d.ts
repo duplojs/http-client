@@ -29,9 +29,9 @@ type CodegenRoutes = ({
     method: "GET";
     path: "/users";
     query?: {
-        page: number;
-        take: number;
-        ignoredUserId: string[] | string;
+        page?: number | undefined;
+        take?: number | undefined;
+        ignoredUserId?: (string[] | string) | undefined;
     } | undefined;
     response: {
         code: 403;

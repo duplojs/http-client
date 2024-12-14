@@ -14,9 +14,9 @@ type check = ExpectType<
 		method: "GET";
 		path: "/users";
 		query: {
-			page: string;
-			take: string;
-			ignoredUserId: string[] | string;
+			page?: string;
+			take?: string;
+			ignoredUserId?: string[] | string;
 		} | undefined;
 		response: {
 			code: 403;
