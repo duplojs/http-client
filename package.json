@@ -13,6 +13,7 @@
     "test:types": "npm run test:types:scripts && npm run integration:test:types",
     "test:types:scripts": "tsc",
     "integration:test:types": "npm -w test/integration run test:types",
+    "integration:generate:types": "npx duplojs-types-codegen -i test/integration/routes -o test/integration/OutputType.d.ts",
     "test:lint": "eslint",
     "test:lint:fix": "eslint --fix",
     "prepare": "husky"
@@ -35,8 +36,9 @@
   "devDependencies": {
     "@commitlint/cli": "^19.4.0",
     "@commitlint/config-conventional": "^19.2.2",
-    "@duplojs/core": ">=0.21.0 <1.0.0",
+    "@duplojs/core": ">=0.23.0 <1.0.0",
     "@duplojs/eslint": "0.3.0",
+    "@duplojs/types-codegen": ">=0.1.3 <1.0.0",
     "@edge-runtime/vm": "^5.0.0",
     "@rollup/plugin-typescript": "^11.1.6",
     "@types/node": "^22.1.0",

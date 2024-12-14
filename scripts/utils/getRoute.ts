@@ -1,9 +1,9 @@
 import { type Request } from "@scripts/httpClient";
 import { type Response } from "@scripts/PromiseRequest";
-import { type Route } from "@scripts/route";
+import { type HttpClientRoute } from "@scripts/HttpClientRoute";
 
 export type GetResponseFromRequest<
-	GenericRoute extends Route,
+	GenericRoute extends HttpClientRoute,
 	GenericRequest extends Request,
 > = [Extract<GenericRoute, {
 	method: GenericRequest["method"];
@@ -15,9 +15,11 @@ export type GetResponseFromRequest<
 		path: GenericRequest["path"];
 	}>["response"];
 
-export type GetRouteByMethod<
-	GenericRoute extends Route,
-	GenericMethod extends Route["method"],
-> = [Extract<GenericRoute, { method: GenericMethod }>] extends [never]
-	? Route
-	: Extract<GenericRoute, { method: GenericMethod }>;
+export type GetRouteByAttribute<
+	GenericRoute extends HttpClientRoute,
+	GenericAttribute extends Partial<
+		Pick<HttpClientRoute, "method" | "path">
+	>,
+> = [Extract<GenericRoute, GenericAttribute>] extends [never]
+	? HttpClientRoute
+	: Extract<GenericRoute, GenericAttribute>;

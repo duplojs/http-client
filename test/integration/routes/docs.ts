@@ -1,4 +1,4 @@
-import { NoContentHttpResponse, recieveFiles, useBuilder, zod } from "@duplojs/core";
+import { makeResponseContract, NoContentHttpResponse, recieveFiles, useBuilder, zod } from "@duplojs/core";
 
 useBuilder()
 	.createRoute("POST", "/docs")
@@ -10,14 +10,18 @@ useBuilder()
 				mimeType: "image/png",
 			}),
 			accepte: zod.booleanInString(),
+			someString: zod.string(),
 		}),
 	})
-	.handler(async(pickup) => {
-		const { docs, accepte } = pickup("body");
+	.handler(
+		async(pickup) => {
+			const { docs, accepte } = pickup("body");
 
-		if (accepte) {
-			await docs.at(0)!.deplace("test/savedFile/toto.png");
-		}
+			if (accepte) {
+				await docs.at(0)!.deplace("test/savedFile/toto.png");
+			}
 
-		return new NoContentHttpResponse("uploadedFile");
-	});
+			return new NoContentHttpResponse("uploadedFile");
+		},
+		makeResponseContract(NoContentHttpResponse, "uploadedFile"),
+	);
