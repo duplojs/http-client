@@ -15,8 +15,7 @@ export default defineConfig({
 			reportsDirectory: "coverage",
 			exclude: [
 				"**/*.test.ts",
-				"test/utils",
-				"test/generic",
+				"test",
 				"dist",
 			],
 		},

@@ -5,7 +5,7 @@ import { queryToString } from "./utils/queryToString";
 import { type GetResponseByInformation, type GetResponseByCode, type GetResponseByStatus } from "./utils/getResponse";
 import { WrongResponseError } from "./WrongResponseError";
 import { type GetCallbackCodeHook, type GetCallbackGeneralHook, type GetCallbackInformationHook } from "./utils/getCallbackHook";
-import { type RouteResponse } from "./route";
+import { type HttpClientRouteResponse } from "./HttpClientRoute";
 
 export interface Interceptor {
 	request(request: RequestDefinition): RequestDefinition | Promise<RequestDefinition>;
@@ -27,7 +27,7 @@ export interface RequestDefinition {
 }
 
 export type Response<
-	GenericRouteResponse extends RouteResponse = RouteResponse,
+	GenericRouteResponse extends HttpClientRouteResponse = HttpClientRouteResponse,
 > = GenericRouteResponse & {
 	headers: Headers;
 	type: ResponseType;
@@ -36,7 +36,7 @@ export type Response<
 };
 
 export class PromiseRequest<
-	GenericRouteResponse extends RouteResponse,
+	GenericRouteResponse extends HttpClientRouteResponse,
 > extends Promise<
 		Response<GenericRouteResponse>
 	> {

@@ -1,13 +1,12 @@
-import { HttpClient, type Request } from "@scripts/httpClient";
+import { HttpClient } from "@scripts/httpClient";
 import { type Routes } from "./types";
 import { type ExpectType } from "@test/utils/expectType";
 import { type Response } from "@scripts/PromiseRequest";
-import { type GetRouteByMethod } from "@scripts/index";
 
 const client = new HttpClient<Routes>();
 
 const user = await client
-	.get({ path: "/users/{userId}" })
+	.get("/users/{userId}", { params: { userId: "test" } })
 	.whenCode("200", ({ body, code, information }) => {
 		type check = ExpectType<
 			typeof body,
@@ -71,14 +70,16 @@ type check = ExpectType<
 >;
 
 const notFoundUser = await client
-	.put({
-		path: "/users/{userId}",
-		params: { userId: "2" },
-		body: {
-			name: "test",
-			userId: "9",
+	.put(
+		"/users/{userId}",
+		{
+			params: { userId: "2" },
+			body: {
+				name: "test",
+				userId: "9",
+			},
 		},
-	})
+	)
 	.whenInformation("user.replaced", ({ body, code, information }) => {
 		type check = ExpectType<
 			typeof body,
@@ -139,15 +140,17 @@ type check1 = ExpectType<
 >;
 
 const patcherUser = await client
-	.patch({
-		path: "/users/{userId}",
-		params: {
-			userId: "3",
+	.patch(
+		"/users/{userId}",
+		{
+			params: {
+				userId: "3",
+			},
+			body: {
+				name: "math",
+			},
 		},
-		body: {
-			name: "math",
-		},
-	})
+	)
 	.whenResponseSuccess(({ code, body, information }) => {
 		type check = ExpectType<
 			typeof body,
@@ -194,16 +197,5 @@ const patcherUser = await client
 type check2 = ExpectType<
 	typeof patcherUser,
 	Response,
-	"strict"
->;
-
-type check3 = ExpectType<
-	Parameters<typeof client.get>,
-	[
-		Omit<
-			Request<GetRouteByMethod<Routes, "GET">>,
-			"method" | "body"
-		>,
-	],
 	"strict"
 >;

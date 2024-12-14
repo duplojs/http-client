@@ -1,2 +1,4 @@
 #!/usr/bin/env sh
 npx commitlint --edit
+npm run integration:generate:types
+git add test/integration/OutputType.d.ts

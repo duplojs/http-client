@@ -1,8 +1,9 @@
 import { existsSync } from "fs";
 import { lstat, mkdir, readFile, rm } from "fs/promises";
 import { server } from "./main";
-import { HttpClient } from "@duplojs/http-client";
+import { HttpClient, StrictFormData, type TransformCodegenRouteToHttpClientRoute } from "@duplojs/http-client";
 import { stringToBytes } from "@duplojs/core";
+import { type CodegenRoutes } from "./OutputType";
 
 describe("integration", () => {
 	beforeEach(async() => {
@@ -19,13 +20,17 @@ describe("integration", () => {
 		server.close();
 	});
 
-	const client = new HttpClient({
+	type HttpClientRoute = TransformCodegenRouteToHttpClientRoute<
+		CodegenRoutes
+	>;
+
+	const client = new HttpClient<HttpClientRoute>({
 		baseUrl: "http://localhost:15159",
 	});
 
 	it("GET /users", async() => {
 		const result1 = await client
-			.get({ path: "/users" })
+			.get("/users", { query: { ignoredUserId: "toto" } })
 			.IWantInformation("users")
 			.then(({ body }) => body);
 
@@ -40,12 +45,11 @@ describe("integration", () => {
 		const whenResponseSuccess = vi.fn();
 
 		const result2 = await client
-			.get({
-				path: "/users",
+			.get("/users", {
 				query: {
 					ignoredUserId: "tutu",
-					page: 20,
-					take: 9,
+					page: "20",
+					take: "9",
 				},
 			})
 			.whenCode("200", whenCode)
@@ -82,13 +86,15 @@ describe("integration", () => {
 
 	it("POST /users", async() => {
 		const result = await client
-			.post({
-				path: "/users",
-				body: {
-					name: "liam",
-					age: 16,
+			.post(
+				"/users",
+				{
+					body: {
+						name: "liam",
+						age: 16,
+					},
 				},
-			})
+			)
 			.IWantInformation("userCreated")
 			.then(({ body }) => body);
 
@@ -99,22 +105,26 @@ describe("integration", () => {
 	});
 
 	it("send file", async() => {
-		const formData = new FormData();
-		formData.append("accepte", "true");
 		const blob = new Blob([await readFile("test/fakeFiles/1mb.png", "utf-8")]);
-		formData.append(
-			"docs",
-			new File([blob], "avatar.png", {
-				type: "image/png",
-				lastModified: Date.now(),
-			}),
-		);
+
+		const formData = new StrictFormData({
+			docs: [
+				new File([blob], "avatar.png", {
+					type: "image/png",
+					lastModified: Date.now(),
+				}),
+			],
+			accepte: "true",
+			someString: "toto",
+		});
 
 		const result = await client
-			.post({
-				path: "/docs",
-				body: formData,
-			});
+			.post(
+				"/docs",
+				{
+					body: formData,
+				},
+			);
 
 		expect(result.code).toBe(204);
 		expect(existsSync("test/savedFile/toto.png")).toBe(true);

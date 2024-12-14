@@ -77,7 +77,7 @@ describe("httpClient", () => {
 	it("GET", () => {
 		const client = new HttpClient();
 
-		void client.get({ path: "/users/{userId}" });
+		void client.get("/users/{userId}");
 
 		expect(PromiseRequest).toHaveBeenLastCalledWith({
 			baseUrl: "",
@@ -97,10 +97,12 @@ describe("httpClient", () => {
 	it("POST", () => {
 		const client = new HttpClient();
 
-		void client.post({
-			path: "/users/{userId}",
-			body: "toto",
-		});
+		void client.post(
+			"/users/{userId}",
+			{
+				body: "toto",
+			},
+		);
 
 		expect(PromiseRequest).toHaveBeenLastCalledWith({
 			baseUrl: "",
@@ -120,10 +122,12 @@ describe("httpClient", () => {
 	it("PUT", () => {
 		const client = new HttpClient();
 
-		void client.put({
-			path: "/users/{userId}",
-			body: "toto",
-		});
+		void client.put(
+			"/users/{userId}",
+			{
+				body: "toto",
+			},
+		);
 
 		expect(PromiseRequest).toHaveBeenLastCalledWith({
 			baseUrl: "",
@@ -143,10 +147,12 @@ describe("httpClient", () => {
 	it("PATCH", () => {
 		const client = new HttpClient();
 
-		void client.patch({
-			path: "/users/{userId}",
-			body: "toto",
-		});
+		void client.patch(
+			"/users/{userId}",
+			{
+				body: "toto",
+			},
+		);
 
 		expect(PromiseRequest).toHaveBeenLastCalledWith({
 			baseUrl: "",
@@ -166,9 +172,7 @@ describe("httpClient", () => {
 	it("DELETE", () => {
 		const client = new HttpClient();
 
-		void client.delete({
-			path: "/users/{userId}",
-		});
+		void client.delete("/users/{userId}");
 
 		expect(PromiseRequest).toHaveBeenLastCalledWith({
 			baseUrl: "",
