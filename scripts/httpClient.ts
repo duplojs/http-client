@@ -1,7 +1,9 @@
 import { type Hooks } from "./hook";
 import { type Interceptor, PromiseRequest } from "./PromiseRequest";
-import { type Route } from "./route";
-import { type GetRouteByMethod, type GetResponseFromRequest } from "./utils/getRoute";
+import { type HttpClientRoute } from "./HttpClientRoute";
+import { type GetResponseFromRequest, type GetRouteByAttribute } from "./utils/getRoute";
+import { type ObjectCanBeEmpty } from "./utils/objectCanBeEmpty";
+import { type SimplifyType } from "./utils/simplifyType";
 
 export interface InitHttpClient {
 	baseUrl?: string;
@@ -11,12 +13,35 @@ export interface InitHttpClient {
 export type DefaultRequest = Omit<Partial<Request>, "path" | "method" | "body">;
 
 export type Request<
-	GenericRoute extends Route = Route,
+	GenericRoute extends HttpClientRoute = HttpClientRoute,
 > = Omit<GenericRoute, "response">
 	& Omit<RequestInit, "method" | "body" | "headers">;
 
+export type RequestParams<
+	GenericRoute extends HttpClientRoute = HttpClientRoute,
+	GenericMethod extends GenericRoute["method"] = string,
+	GenericPath extends GenericRoute["path"] = string,
+> = Omit<
+	Request<
+		GetRouteByAttribute<
+			GenericRoute,
+			{
+				method: GenericMethod;
+				path: GenericPath;
+			}
+		>
+	>,
+	"method" | "path"
+>;
+
+export type MaybeRequestParams<
+	GenericRequestParams extends RequestParams,
+> = ObjectCanBeEmpty<GenericRequestParams> extends true
+	? [params?: GenericRequestParams]
+	: [params: GenericRequestParams];
+
 export class HttpClient<
-	GenericRoute extends Route = Route,
+	GenericRoute extends HttpClientRoute = HttpClientRoute,
 > {
 	public baseUrl: string;
 
@@ -102,83 +127,98 @@ export class HttpClient<
 	}
 
 	public get<
-		GenericRequest extends Omit<
-			Request<GetRouteByMethod<GenericRoute, "GET">>,
-			"method" | "body"
-		>,
+		GenericPath extends GetRouteByAttribute<GenericRoute, { method: "GET" }>["path"],
+		GenericRequestParams extends SimplifyType<Omit<RequestParams<GenericRoute, "GET", GenericPath>, "body">>,
 	>(
-		params: GenericRequest,
+		path: GenericPath,
+		...[params]: MaybeRequestParams<GenericRequestParams>
 	): PromiseRequest<
-			GetResponseFromRequest<GenericRoute, GenericRequest & { method: "GET" }>
+			GetResponseFromRequest<GenericRoute, GenericRequestParams & {
+				method: "GET";
+				path: GenericPath;
+			}>
 		> {
 		return this.request<any>({
 			...params,
 			method: "GET",
+			path,
 			body: undefined,
 		});
 	}
 
 	public post<
-		GenericRequest extends Omit<
-			Request<GetRouteByMethod<GenericRoute, "POST">>,
-			"method"
-		>,
+		GenericPath extends GetRouteByAttribute<GenericRoute, { method: "POST" }>["path"],
+		GenericRequestParams extends SimplifyType<RequestParams<GenericRoute, "POST", GenericPath>>,
 	>(
-		params: GenericRequest,
+		path: GenericPath,
+		...[params]: MaybeRequestParams<GenericRequestParams>
 	): PromiseRequest<
-			GetResponseFromRequest<GenericRoute, GenericRequest & { method: "POST" }>
+			GetResponseFromRequest<GenericRoute, GenericRequestParams & {
+				method: "POST";
+				path: GenericPath;
+			}>
 		> {
 		return this.request<any>({
 			...params,
 			method: "POST",
+			path,
 		});
 	}
 
 	public patch<
-		GenericRequest extends Omit<
-			Request<GetRouteByMethod<GenericRoute, "PATCH">>,
-			"method"
-		>,
+		GenericPath extends GetRouteByAttribute<GenericRoute, { method: "PATCH" }>["path"],
+		GenericRequestParams extends SimplifyType<RequestParams<GenericRoute, "PATCH", GenericPath>>,
 	>(
-		params: GenericRequest,
+		path: GenericPath,
+		...[params]: MaybeRequestParams<GenericRequestParams>
 	): PromiseRequest<
-			GetResponseFromRequest<GenericRoute, GenericRequest & { method: "PATCH" }>
+			GetResponseFromRequest<GenericRoute, GenericRequestParams & {
+				method: "PATCH";
+				path: GenericPath;
+			}>
 		> {
 		return this.request<any>({
 			...params,
 			method: "PATCH",
+			path,
 		});
 	}
 
 	public put<
-		GenericRequest extends Omit<
-			Request<GetRouteByMethod<GenericRoute, "PUT">>,
-			"method"
-		>,
+		GenericPath extends GetRouteByAttribute<GenericRoute, { method: "PUT" }>["path"],
+		GenericRequestParams extends SimplifyType<RequestParams<GenericRoute, "PUT", GenericPath>>,
 	>(
-		params: GenericRequest,
+		path: GenericPath,
+		...[params]: MaybeRequestParams<GenericRequestParams>
 	): PromiseRequest<
-			GetResponseFromRequest<GenericRoute, GenericRequest & { method: "PUT" }>
+			GetResponseFromRequest<GenericRoute, GenericRequestParams & {
+				method: "PUT";
+				path: GenericPath;
+			}>
 		> {
 		return this.request<any>({
 			...params,
 			method: "PUT",
+			path,
 		});
 	}
 
 	public delete<
-		GenericRequest extends Omit<
-			Request<GetRouteByMethod<GenericRoute, "DELETE">>,
-			"method"
-		>,
+		GenericPath extends GetRouteByAttribute<GenericRoute, { method: "DELETE" }>["path"],
+		GenericRequestParams extends SimplifyType<Omit<RequestParams<GenericRoute, "DELETE", GenericPath>, "body">>,
 	>(
-		params: GenericRequest,
+		path: GenericPath,
+		...[params]: MaybeRequestParams<GenericRequestParams>
 	): PromiseRequest<
-			GetResponseFromRequest<GenericRoute, GenericRequest & { method: "DELETE" }>
+			GetResponseFromRequest<GenericRoute, GenericRequestParams & {
+				method: "DELETE";
+				path: GenericPath;
+			}>
 		> {
 		return this.request<any>({
 			...params,
 			method: "DELETE",
+			path,
 			body: undefined,
 		});
 	}

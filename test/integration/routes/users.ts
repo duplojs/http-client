@@ -1,4 +1,4 @@
-import { OkHttpResponse, useBuilder, zod, zoderce } from "@duplojs/core";
+import { ForbiddenHttpResponse, makeResponseContract, OkHttpResponse, useBuilder, zod, zoderce } from "@duplojs/core";
 
 useBuilder()
 	.createRoute("GET", "/users")
@@ -17,10 +17,24 @@ useBuilder()
 				.toArray(),
 		},
 	})
+	.cut(
+		({ dropper }) => dropper(null),
+		[],
+		makeResponseContract(ForbiddenHttpResponse, "Wrong"),
+	)
 	.handler(
 		(pickup) => new OkHttpResponse(
 			"users",
 			pickup(["ignoredUserId", "page", "take"]),
+		),
+		makeResponseContract(
+			OkHttpResponse,
+			"users",
+			zod.object({
+				page: zod.number(),
+				take: zod.number(),
+				ignoredUserId: zod.string().array(),
+			}),
 		),
 	);
 
@@ -32,7 +46,17 @@ useBuilder()
 			age: zod.number(),
 		}).strip(),
 	})
-	.handler((pickup) => new OkHttpResponse(
-		"userCreated",
-		pickup("body"),
-	));
+	.handler(
+		(pickup) => new OkHttpResponse(
+			"userCreated",
+			pickup("body"),
+		),
+		makeResponseContract(
+			OkHttpResponse,
+			"userCreated",
+			zod.object({
+				name: zod.string(),
+				age: zod.number(),
+			}),
+		),
+	);
