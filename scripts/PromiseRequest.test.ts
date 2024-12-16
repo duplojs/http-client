@@ -177,13 +177,13 @@ describe("PromiseRequest", () => {
 				responseInformation,
 				responseSuccess,
 			] = await Promise.all([
-				promise.IWantCode("200"),
-				promise.IWantInformation("key"),
-				promise.IWantResponseSuccess(),
-				promise.IWantCode("400").catch(whenCodeError),
-				promise.IWantInformation("wrong").catch(whenInformationError),
-				promise.IWantRequestError().catch(whenResponseSuccessError),
-				promise.IWantServerError().catch(whenServerError),
+				promise.iWantCode("200"),
+				promise.iWantInformation("key"),
+				promise.iWantResponseSuccess(),
+				promise.iWantCode("400").catch(whenCodeError),
+				promise.iWantInformation("wrong").catch(whenInformationError),
+				promise.iWantRequestError().catch(whenResponseSuccessError),
+				promise.iWantServerError().catch(whenServerError),
 			]);
 
 			expect(whenCode).toHaveBeenLastCalledWith(response);
@@ -229,8 +229,8 @@ describe("PromiseRequest", () => {
 				.whenRequestError(whenRequestError);
 
 			const [RequestError, ResponseSuccess] = await Promise.all([
-				promise.IWantRequestError(),
-				promise.IWantResponseSuccess().catch(whenResponseSuccess),
+				promise.iWantRequestError(),
+				promise.iWantResponseSuccess().catch(whenResponseSuccess),
 
 			]);
 
@@ -259,7 +259,7 @@ describe("PromiseRequest", () => {
 			const promise = new PromiseRequest(requestDefinition)
 				.whenServerError(whenServerError);
 
-			const serverError = await promise.IWantServerError();
+			const serverError = await promise.iWantServerError();
 
 			expect(whenServerError).toHaveBeenLastCalledWith(response);
 
