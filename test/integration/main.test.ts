@@ -31,7 +31,7 @@ describe("integration", () => {
 	it("GET /users", async() => {
 		const result1 = await client
 			.get("/users", { query: { ignoredUserId: "toto" } })
-			.IWantInformation("users")
+			.iWantInformation("users")
 			.then(({ body }) => body);
 
 		expect(result1).toStrictEqual({
@@ -55,7 +55,7 @@ describe("integration", () => {
 			.whenCode("200", whenCode)
 			.whenInformation("users", whenInformation)
 			.whenResponseSuccess(whenResponseSuccess)
-			.IWantInformation("users")
+			.iWantInformation("users")
 			.then(({ body }) => body);
 
 		expect(whenCode.mock.lastCall).toMatchObject([
@@ -95,7 +95,7 @@ describe("integration", () => {
 					},
 				},
 			)
-			.IWantInformation("userCreated")
+			.iWantInformation("userCreated")
 			.then(({ body }) => body);
 
 		expect(result).toStrictEqual({

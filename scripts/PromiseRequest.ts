@@ -6,6 +6,7 @@ import { type GetResponseByInformation, type GetResponseByCode, type GetResponse
 import { WrongResponseError } from "./WrongResponseError";
 import { type GetCallbackCodeHook, type GetCallbackGeneralHook, type GetCallbackInformationHook } from "./utils/getCallbackHook";
 import { type HttpClientRouteResponse } from "./httpClientRoute";
+import { type SimplifyType } from "./utils/simplifyType";
 
 export interface Interceptor {
 	request(request: RequestDefinition): RequestDefinition | Promise<RequestDefinition>;
@@ -28,12 +29,14 @@ export interface RequestDefinition {
 
 export type Response<
 	GenericRouteResponse extends HttpClientRouteResponse = HttpClientRouteResponse,
-> = GenericRouteResponse & {
-	headers: Headers;
-	type: ResponseType;
-	url: string;
-	redirected: boolean;
-};
+> = SimplifyType<
+	GenericRouteResponse & {
+		headers: Headers;
+		type: ResponseType;
+		url: string;
+		redirected: boolean;
+	}
+>;
 
 export class PromiseRequest<
 	GenericRouteResponse extends HttpClientRouteResponse,
@@ -184,7 +187,7 @@ export class PromiseRequest<
 		return this;
 	}
 
-	public IWantInformation<
+	public iWantInformation<
 		GenericInformation extends Extract<
 			Response<GenericRouteResponse>["information"],
 			string
@@ -206,7 +209,7 @@ export class PromiseRequest<
 		);
 	}
 
-	public IWantCode<
+	public iWantCode<
 		GenericCode extends Response<GenericRouteResponse>["code"],
 	>(code: `${GenericCode}`): Promise<
 		GetResponseByCode<
@@ -225,7 +228,7 @@ export class PromiseRequest<
 		);
 	}
 
-	public IWantRequestError(): Promise<
+	public iWantRequestError(): Promise<
 		GetResponseByStatus<
 			Response<GenericRouteResponse>,
 			false
@@ -242,7 +245,7 @@ export class PromiseRequest<
 		);
 	}
 
-	public IWantResponseSuccess(): Promise<
+	public iWantResponseSuccess(): Promise<
 		GetResponseByStatus<
 			Response<GenericRouteResponse>,
 			true
@@ -259,7 +262,7 @@ export class PromiseRequest<
 		);
 	}
 
-	public IWantServerError() {
+	public iWantServerError() {
 		return this.then(
 			(response: Response) => {
 				if (response.code >= 500 && response.code <= 599) {
