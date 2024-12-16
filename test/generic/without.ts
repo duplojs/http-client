@@ -44,7 +44,7 @@ const user = await client
 			"strict"
 		>;
 	})
-	.IWantInformation("user.get");
+	.iWantInformation("user.get");
 
 type check = ExpectType<
 	typeof user,
@@ -101,7 +101,7 @@ const notFoundUser = await client
 			"strict"
 		>;
 	})
-	.IWantCode("404");
+	.iWantCode("404");
 
 type check1 = ExpectType<
 	typeof notFoundUser,
@@ -159,7 +159,7 @@ const patcherUser = await client
 			"strict"
 		>;
 	})
-	.IWantServerError();
+	.iWantServerError();
 
 type check2 = ExpectType<
 	typeof patcherUser,

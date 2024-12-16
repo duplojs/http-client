@@ -48,7 +48,7 @@ const user = await client
 			"strict"
 		>;
 	})
-	.IWantInformation("user.get");
+	.iWantInformation("user.get");
 
 type check = ExpectType<
 	typeof user,
@@ -60,7 +60,6 @@ type check = ExpectType<
 			name: string;
 		};
 		ok: true;
-	} & {
 		headers: Headers;
 		type: ResponseType;
 		url: string;
@@ -121,7 +120,7 @@ const notFoundUser = await client
 			"strict"
 		>;
 	})
-	.IWantCode("404");
+	.iWantCode("404");
 
 type check1 = ExpectType<
 	typeof notFoundUser,
@@ -130,7 +129,6 @@ type check1 = ExpectType<
 		information: "user.notFound";
 		body: undefined;
 		ok: false;
-	} & {
 		headers: Headers;
 		type: ResponseType;
 		url: string;
@@ -192,7 +190,7 @@ const patcherUser = await client
 			"strict"
 		>;
 	})
-	.IWantServerError();
+	.iWantServerError();
 
 type check2 = ExpectType<
 	typeof patcherUser,
