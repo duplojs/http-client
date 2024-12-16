@@ -6,7 +6,6 @@ export interface ExpectCodegenRouteReponse {
 	code: number;
 	information: undefined | string;
 	body?: unknown;
-	ok: boolean;
 }
 
 export interface ExpectCodegenRoute {

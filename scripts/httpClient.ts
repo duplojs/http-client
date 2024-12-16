@@ -1,6 +1,6 @@
 import { type Hooks } from "./hook";
 import { type Interceptor, PromiseRequest } from "./PromiseRequest";
-import { type HttpClientRoute } from "./HttpClientRoute";
+import { type HttpClientRoute } from "./httpClientRoute";
 import { type GetResponseFromRequest, type GetRouteByAttribute } from "./utils/getRoute";
 import { type ObjectCanBeEmpty } from "./utils/objectCanBeEmpty";
 import { type SimplifyType } from "./utils/simplifyType";

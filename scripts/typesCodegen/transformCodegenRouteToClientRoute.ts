@@ -4,6 +4,7 @@ import { type ExpectReceiveFormData } from "./expectReceiveFormData";
 import { type RemoveNeverProperties } from "./removeNeverProperties";
 import { type SimplifyType } from "@scripts/utils/simplifyType";
 import { type IsEqual } from "@scripts/utils/isEqual";
+import { type OptionalUndefined } from "@scripts/utils/optionalUndefined";
 
 export type ReplaceTypeToString<
 	GenericValue extends unknown,
@@ -35,7 +36,9 @@ export type TransformCodegenRouteResponseToHttpClientRouteResponse<
 			code: GenericResponse["code"];
 			information: GenericResponse["information"];
 			body: transformCodegenBodyToHttpClientBody<GenericResponse["body"]>;
-			ok: GenericResponse["ok"];
+			ok: `${GenericResponse["code"]}` extends `2${number}`
+				? true
+				: false;
 		}
 		: never
 >;
@@ -44,23 +47,26 @@ export type TransformCodegenRouteToHttpClientRoute<
 	GenericCodegenRoute extends ExpectCodegenRoute,
 > = SimplifyType<
 	GenericCodegenRoute extends ExpectCodegenRoute
-		? RemoveNeverProperties<{
+		? {
 			method: GenericCodegenRoute["method"];
 			path: GenericCodegenRoute["path"];
-			headers: IsEqual<GenericCodegenRoute["headers"], unknown> extends true
-				? never
-				: ReplaceTypeToString<GenericCodegenRoute["headers"], Date | number>;
-			params: IsEqual<GenericCodegenRoute["params"], unknown> extends true
-				? never
-				: ReplaceTypeToString<GenericCodegenRoute["params"], Date | number>;
-			query: IsEqual<GenericCodegenRoute["query"], unknown> extends true
-				? never
-				: ReplaceTypeToString<GenericCodegenRoute["query"], Date | number>;
-			body: IsEqual<GenericCodegenRoute["body"], unknown> extends true
-				? never
-				: transformCodegenBodyToHttpClientBody<GenericCodegenRoute["body"]>;
 			response: TransformCodegenRouteResponseToHttpClientRouteResponse<GenericCodegenRoute["response"]>;
-		}>
+		} & OptionalUndefined<
+			RemoveNeverProperties<{
+				headers: IsEqual<GenericCodegenRoute["headers"], unknown> extends true
+					? never
+					: ReplaceTypeToString<GenericCodegenRoute["headers"], Date | number>;
+				params: IsEqual<GenericCodegenRoute["params"], unknown> extends true
+					? never
+					: ReplaceTypeToString<GenericCodegenRoute["params"], Date | number>;
+				query: IsEqual<GenericCodegenRoute["query"], unknown> extends true
+					? never
+					: ReplaceTypeToString<GenericCodegenRoute["query"], Date | number>;
+				body: IsEqual<GenericCodegenRoute["body"], unknown> extends true
+					? never
+					: transformCodegenBodyToHttpClientBody<GenericCodegenRoute["body"]>;
+			}>
+		>
 		: never
 >;
 

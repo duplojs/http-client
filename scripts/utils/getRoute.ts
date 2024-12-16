@@ -1,6 +1,6 @@
 import { type Request } from "@scripts/httpClient";
 import { type Response } from "@scripts/PromiseRequest";
-import { type HttpClientRoute } from "@scripts/HttpClientRoute";
+import { type HttpClientRoute } from "@scripts/httpClientRoute";
 
 export type GetResponseFromRequest<
 	GenericRoute extends HttpClientRoute,

@@ -1,4 +1,4 @@
-import { type FindHttpClinteRoute, HttpClient, StrictFormData, type TransformCodegenRouteToHttpClientRoute } from "@duplojs/http-client";
+import { type FindHttpClientRoute, HttpClient, StrictFormData, type TransformCodegenRouteToHttpClientRoute } from "@duplojs/http-client";
 import { type CodegenRoutes } from "./OutputType";
 import { type ExpectType } from "./utils/expectType";
 
@@ -6,14 +6,14 @@ type HttpClientRoute = TransformCodegenRouteToHttpClientRoute<
 	CodegenRoutes
 >;
 
-type FirstRoute = FindHttpClinteRoute<HttpClientRoute, "GET", "/users">;
+type FirstRoute = FindHttpClientRoute<HttpClientRoute, "GET", "/users">;
 
 type check = ExpectType<
 	FirstRoute,
 	{
 		method: "GET";
 		path: "/users";
-		query: {
+		query?: {
 			page?: string;
 			take?: string;
 			ignoredUserId?: string[] | string;
