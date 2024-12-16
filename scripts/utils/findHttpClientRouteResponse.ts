@@ -1,4 +1,4 @@
-import { type HttpClientRoute } from "@scripts/HttpClientRoute";
+import { type HttpClientRoute } from "@scripts/httpClientRoute";
 
 export type FindHttpClientRouteResponse<
 	GenericRoute extends HttpClientRoute,
