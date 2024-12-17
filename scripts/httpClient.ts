@@ -15,7 +15,8 @@ export type DefaultRequest = Omit<Partial<Request>, "path" | "method" | "body">;
 export type Request<
 	GenericRoute extends HttpClientRoute = HttpClientRoute,
 > = Omit<GenericRoute, "response">
-	& Omit<RequestInit, "method" | "body" | "headers">;
+	& Omit<RequestInit, "method" | "body" | "headers">
+	& Omit<HttpClientRoute, keyof GenericRoute | "response">;
 
 export type RequestParams<
 	GenericRoute extends HttpClientRoute = HttpClientRoute,
@@ -131,7 +132,7 @@ export class HttpClient<
 		GenericRequestParams extends SimplifyType<Omit<RequestParams<GenericRoute, "GET", GenericPath>, "body">>,
 	>(
 		path: GenericPath,
-		...[params]: MaybeRequestParams<GenericRequestParams>
+		...[params]: NoInfer<MaybeRequestParams<GenericRequestParams>>
 	): PromiseRequest<
 			GetResponseFromRequest<GenericRoute, GenericRequestParams & {
 				method: "GET";
@@ -151,7 +152,7 @@ export class HttpClient<
 		GenericRequestParams extends SimplifyType<RequestParams<GenericRoute, "POST", GenericPath>>,
 	>(
 		path: GenericPath,
-		...[params]: MaybeRequestParams<GenericRequestParams>
+		...[params]: NoInfer<MaybeRequestParams<GenericRequestParams>>
 	): PromiseRequest<
 			GetResponseFromRequest<GenericRoute, GenericRequestParams & {
 				method: "POST";
@@ -170,7 +171,7 @@ export class HttpClient<
 		GenericRequestParams extends SimplifyType<RequestParams<GenericRoute, "PATCH", GenericPath>>,
 	>(
 		path: GenericPath,
-		...[params]: MaybeRequestParams<GenericRequestParams>
+		...[params]: NoInfer<MaybeRequestParams<GenericRequestParams>>
 	): PromiseRequest<
 			GetResponseFromRequest<GenericRoute, GenericRequestParams & {
 				method: "PATCH";
@@ -189,7 +190,7 @@ export class HttpClient<
 		GenericRequestParams extends SimplifyType<RequestParams<GenericRoute, "PUT", GenericPath>>,
 	>(
 		path: GenericPath,
-		...[params]: MaybeRequestParams<GenericRequestParams>
+		...[params]: NoInfer<MaybeRequestParams<GenericRequestParams>>
 	): PromiseRequest<
 			GetResponseFromRequest<GenericRoute, GenericRequestParams & {
 				method: "PUT";
@@ -208,7 +209,7 @@ export class HttpClient<
 		GenericRequestParams extends SimplifyType<Omit<RequestParams<GenericRoute, "DELETE", GenericPath>, "body">>,
 	>(
 		path: GenericPath,
-		...[params]: MaybeRequestParams<GenericRequestParams>
+		...[params]: NoInfer<MaybeRequestParams<GenericRequestParams>>
 	): PromiseRequest<
 			GetResponseFromRequest<GenericRoute, GenericRequestParams & {
 				method: "DELETE";
