@@ -51,8 +51,8 @@ export type Routes = | {
 	params: {
 		userId: string;
 	};
-	body: {
-		name: string;
+	body?: {
+		name?: string;
 	};
 	response: | {
 		code: 200;
