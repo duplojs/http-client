@@ -1,5 +1,5 @@
 import "@duplojs/node";
-import { Duplo, useBuilder } from "@duplojs/core";
+import { Duplo, useRouteBuilder } from "@duplojs/core";
 import "@routes/users";
 import "@routes/docs";
 
@@ -13,6 +13,6 @@ const duplo = new Duplo({
 	},
 });
 
-duplo.register(...useBuilder.getLastCreatedDuploses());
+duplo.register(...useRouteBuilder.getAllCreatedRoute());
 
 export const server = await duplo.launch();

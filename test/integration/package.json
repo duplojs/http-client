@@ -5,11 +5,10 @@
     "test:types": "tsc"
   },
   "dependencies": {
-    "@duplojs/core": ">=0.23.0 <1.0.0",
     "@duplojs/http-client": "file:../..",
-    "@duplojs/node": ">=0.3.2 <1.0.0"
+    "@duplojs/node": ">=1.0.0 <2.0.0"
   },
   "devDependencies": {
-    "@duplojs/types-codegen": "^0.1.1"
+    "@duplojs/types-codegen": ">=1.0.0 <2.0.0"
   }
 }

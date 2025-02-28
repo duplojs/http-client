@@ -1,5 +1,5 @@
+import { type ExpectType } from "@duplojs/utils";
 import { HttpClient } from "@scripts/httpClient";
-import { type ExpectType } from "@test/utils/expectType";
 import { type Response } from "@scripts/PromiseRequest";
 
 const client = new HttpClient();

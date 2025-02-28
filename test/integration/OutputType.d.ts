@@ -23,7 +23,6 @@ type CodegenRoutes = ({
         code: 204;
         information: "uploadedFile";
         body?: undefined;
-        ok: true;
     };
 }) | ({
     method: "GET";
@@ -37,7 +36,6 @@ type CodegenRoutes = ({
         code: 403;
         information: "Wrong";
         body?: undefined;
-        ok: false;
     } | {
         code: 200;
         information: "users";
@@ -46,7 +44,6 @@ type CodegenRoutes = ({
             take: number;
             ignoredUserId: string[];
         };
-        ok: true;
     };
 }) | ({
     method: "POST";
@@ -62,7 +59,6 @@ type CodegenRoutes = ({
             name: string;
             age: number;
         };
-        ok: true;
     };
 });
 

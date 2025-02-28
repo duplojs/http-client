@@ -1,6 +1,6 @@
 import { type FindHttpClientRoute, HttpClient, StrictFormData, type TransformCodegenRouteToHttpClientRoute } from "@duplojs/http-client";
 import { type CodegenRoutes } from "./OutputType";
-import { type ExpectType } from "./utils/expectType";
+import { type ExpectType } from "@duplojs/utils";
 
 type HttpClientRoute = TransformCodegenRouteToHttpClientRoute<
 	CodegenRoutes

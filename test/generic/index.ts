@@ -1,7 +1,7 @@
 import { HttpClient } from "@scripts/httpClient";
 import { type Routes } from "./types";
-import { type ExpectType } from "@test/utils/expectType";
 import { type Response } from "@scripts/PromiseRequest";
+import { type ExpectType } from "@duplojs/utils";
 
 const client = new HttpClient<Routes>();
 

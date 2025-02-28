@@ -2,8 +2,8 @@ import { existsSync } from "fs";
 import { lstat, mkdir, readFile, rm } from "fs/promises";
 import { server } from "./main";
 import { HttpClient, StrictFormData, type TransformCodegenRouteToHttpClientRoute } from "@duplojs/http-client";
-import { stringToBytes } from "@duplojs/core";
 import { type CodegenRoutes } from "./OutputType";
+import { stringToBytes } from "@duplojs/utils";
 
 describe("integration", () => {
 	beforeEach(async() => {
