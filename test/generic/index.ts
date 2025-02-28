@@ -2,6 +2,8 @@ import { HttpClient } from "@scripts/httpClient";
 import { type Routes } from "./types";
 import { type Response } from "@scripts/PromiseRequest";
 import { type ExpectType } from "@duplojs/utils";
+import { type RemovePrefix } from "@scripts/index";
+import { type AddPrefix } from "@scripts/utils/addPrefix";
 
 const client = new HttpClient<Routes>();
 
@@ -196,4 +198,56 @@ type check2 = ExpectType<
 	typeof patcherUser,
 	Response,
 	"strict"
+>;
+
+type check3 = ExpectType<
+	RemovePrefix<Routes, "/us">,
+	{
+		method: "GET";
+		path: "ers/{userId}";
+		params: {
+			userId: string;
+		};
+		response: | {
+			code: 200;
+			information: "user.get";
+			body: {
+				userId: string;
+				name: string;
+			};
+			ok: true;
+		} | {
+			code: 404;
+			information: "user.notFound";
+			body: undefined;
+			ok: false;
+		};
+	},
+	"one-extends-two"
+>;
+
+type check4 = ExpectType<
+	AddPrefix<Routes, "/us">,
+	{
+		method: "GET";
+		path: "/us/users/{userId}";
+		params: {
+			userId: string;
+		};
+		response: | {
+			code: 200;
+			information: "user.get";
+			body: {
+				userId: string;
+				name: string;
+			};
+			ok: true;
+		} | {
+			code: 404;
+			information: "user.notFound";
+			body: undefined;
+			ok: false;
+		};
+	},
+	"one-extends-two"
 >;

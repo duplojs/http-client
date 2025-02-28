@@ -5,6 +5,7 @@ export * from "./PromiseRequest";
 export * from "./strictFormData";
 export * from "./WrongResponseError";
 
+export * from "./utils/addPrefix";
 export * from "./utils/findHttpClientRoute";
 export * from "./utils/findHttpClientRouteResponse";
 export * from "./utils/getBody";
@@ -18,6 +19,7 @@ export * from "./utils/maybeArray";
 export * from "./utils/objectCanBeEmpty";
 export * from "./utils/optionalUndefined";
 export * from "./utils/queryToString";
+export * from "./utils/removePrefix";
 export * from "./utils/simplifyType";
 
 export * from "./typesCodegen/expectCodegenRoute";
