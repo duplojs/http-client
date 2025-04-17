@@ -50,6 +50,31 @@ const user = await client
 			"strict"
 		>;
 	})
+	.whenInformation(
+		["user.get", "user.notFound"],
+		({ code, body, information }) => {
+			type check = ExpectType<
+				typeof body,
+				{
+					userId: string;
+					name: string;
+				} | undefined,
+				"strict"
+			>;
+
+			type check1 = ExpectType<
+				typeof code,
+				404 | 200,
+				"strict"
+			>;
+
+			type check2 = ExpectType<
+				typeof information,
+				"user.notFound" | "user.get",
+				"strict"
+			>;
+		},
+	)
 	.iWantInformation("user.get");
 
 type check = ExpectType<
