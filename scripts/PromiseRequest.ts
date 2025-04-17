@@ -105,17 +105,26 @@ export class PromiseRequest<
 			string
 		>,
 	>(
-		information: GenericInformation,
+		information: GenericInformation | GenericInformation[],
 		callback: GetCallbackInformationHook<
 			Response<GenericRouteResponse>,
 			GenericInformation
 		>,
 	) {
-		this.hooks.add({
-			type: "information",
-			value: information,
-			callback: <never>callback,
-		});
+		const formatedInformation
+			= information instanceof Array
+				? information
+				: [information];
+
+		formatedInformation.forEach(
+			(information) => {
+				this.hooks.add({
+					type: "information",
+					value: information,
+					callback: <never>callback,
+				});
+			},
+		);
 
 		return this;
 	}
@@ -123,17 +132,26 @@ export class PromiseRequest<
 	public whenCode<
 		GenericCode extends Response<GenericRouteResponse>["code"],
 	>(
-		code: `${GenericCode}`,
+		code: `${GenericCode}` | `${GenericCode}`[],
 		callback: GetCallbackCodeHook<
 			Response<GenericRouteResponse>,
 			GenericCode
 		>,
 	) {
-		this.hooks.add({
-			type: "code",
-			value: Number(code),
-			callback: <never>callback,
-		});
+		const formatedCode
+			= code instanceof Array
+				? code
+				: [code];
+
+		formatedCode.forEach(
+			(code) => {
+				this.hooks.add({
+					type: "code",
+					value: Number(code),
+					callback: <never>callback,
+				});
+			},
+		);
 
 		return this;
 	}
@@ -192,18 +210,26 @@ export class PromiseRequest<
 			Response<GenericRouteResponse>["information"],
 			string
 		>,
-	>(information: GenericInformation): Promise<
+	>(information: GenericInformation | GenericInformation[]): Promise<
 		GetResponseByInformation<
 			Response<GenericRouteResponse>,
 			GenericInformation
 		>
 	> {
+		const formatedInformation
+			= information instanceof Array
+				? information
+				: [information];
+
 		return this.then(
 			(response: Response) => {
-				if (response.information === information) {
+				if (formatedInformation.includes(response.information as never)) {
 					return <any>response;
 				} else {
-					throw new WrongResponseError(response);
+					throw new WrongResponseError(response, {
+						expect: formatedInformation.join(" or "),
+						receive: response.information ?? "undefined",
+					});
 				}
 			},
 		);
@@ -211,18 +237,28 @@ export class PromiseRequest<
 
 	public iWantCode<
 		GenericCode extends Response<GenericRouteResponse>["code"],
-	>(code: `${GenericCode}`): Promise<
-		GetResponseByCode<
-			Response<GenericRouteResponse>,
-			GenericCode
-		>
-	> {
+	>(
+		code: `${GenericCode}` | `${GenericCode}`[],
+	): Promise<
+			GetResponseByCode<
+				Response<GenericRouteResponse>,
+				GenericCode
+			>
+		> {
+		const formatedCode
+			= code instanceof Array
+				? code
+				: [code];
+
 		return this.then(
 			(response: Response) => {
-				if (response.code === Number(code)) {
+				if (formatedCode.includes(response.code.toString() as never)) {
 					return <never>response;
 				} else {
-					throw new WrongResponseError(response);
+					throw new WrongResponseError(response, {
+						expect: formatedCode.join(" or "),
+						receive: response.code.toString(),
+					});
 				}
 			},
 		);
@@ -239,7 +275,10 @@ export class PromiseRequest<
 				if (response.code >= 400 && response.code <= 499) {
 					return <never>response;
 				} else {
-					throw new WrongResponseError(response);
+					throw new WrongResponseError(response, {
+						expect: "400 to 499",
+						receive: response.code.toString(),
+					});
 				}
 			},
 		);
@@ -256,7 +295,10 @@ export class PromiseRequest<
 				if (response.code >= 200 && response.code <= 299) {
 					return <never>response;
 				} else {
-					throw new WrongResponseError(response);
+					throw new WrongResponseError(response, {
+						expect: "200 to 299",
+						receive: response.code.toString(),
+					});
 				}
 			},
 		);
@@ -268,7 +310,10 @@ export class PromiseRequest<
 				if (response.code >= 500 && response.code <= 599) {
 					return response;
 				} else {
-					throw new WrongResponseError(response);
+					throw new WrongResponseError(response, {
+						expect: "500 to 599",
+						receive: response.code.toString(),
+					});
 				}
 			},
 		);

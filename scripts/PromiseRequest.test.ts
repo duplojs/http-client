@@ -191,13 +191,25 @@ describe("PromiseRequest", () => {
 			expect(whenResponseSuccess).toHaveBeenLastCalledWith(response);
 
 			expect(whenCodeError)
-				.toHaveBeenLastCalledWith(new WrongResponseError(<any>response));
+				.toHaveBeenLastCalledWith(new WrongResponseError(<any>response, {
+					expect: "400",
+					receive: "200",
+				}));
 			expect(whenInformationError)
-				.toHaveBeenLastCalledWith(new WrongResponseError(<any>response));
+				.toHaveBeenLastCalledWith(new WrongResponseError(<any>response, {
+					expect: "wrong",
+					receive: "key",
+				}));
 			expect(whenResponseSuccessError)
-				.toHaveBeenLastCalledWith(new WrongResponseError(<any>response));
+				.toHaveBeenLastCalledWith(new WrongResponseError(<any>response, {
+					expect: "400 to 499",
+					receive: "200",
+				}));
 			expect(whenServerError)
-				.toHaveBeenLastCalledWith(new WrongResponseError(<any>response));
+				.toHaveBeenLastCalledWith(new WrongResponseError(<any>response, {
+					expect: "500 to 599",
+					receive: "200",
+				}));
 
 			expect(responseCode).toBe(response);
 			expect(responseInformation).toBe(response);
@@ -236,7 +248,10 @@ describe("PromiseRequest", () => {
 
 			expect(whenRequestError).toHaveBeenLastCalledWith(response);
 			expect(whenResponseSuccess)
-				.toHaveBeenLastCalledWith(new WrongResponseError(<any>response));
+				.toHaveBeenLastCalledWith(new WrongResponseError(<any>response, {
+					expect: "200 to 299",
+					receive: "400",
+				}));
 
 			expect(RequestError).toBe(response);
 		});
