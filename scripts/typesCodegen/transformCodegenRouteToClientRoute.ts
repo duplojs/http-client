@@ -38,7 +38,9 @@ export type TransformCodegenRouteResponseToHttpClientRouteResponse<
 			body: transformCodegenBodyToHttpClientBody<GenericResponse["body"]>;
 			ok: `${GenericResponse["code"]}` extends `2${number}`
 				? true
-				: false;
+				: `${GenericResponse["code"]}` extends `4${number}`
+					? false
+					: null;
 		}
 		: never
 >;

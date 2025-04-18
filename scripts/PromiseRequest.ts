@@ -1,10 +1,10 @@
-import { getCodeHooks, getErrorHooks, getInformationHooks, type Hooks, type GeneralHook, getGeneralHooks, type ErrorHook } from "./hook";
+import { getCodeHooks, getErrorHooks, getInformationHooks, type Hooks, type GeneralHook, getGeneralHooks, type ErrorHook, getExpectedResponseHooks } from "./hook";
 import { getBody } from "./utils/getBody";
 import { insertParamsInPath } from "./utils/insertParamsInPath";
 import { queryToString } from "./utils/queryToString";
 import { type GetResponseByInformation, type GetResponseByCode, type GetResponseByStatus } from "./utils/getResponse";
 import { WrongResponseError } from "./WrongResponseError";
-import { type GetCallbackCodeHook, type GetCallbackGeneralHook, type GetCallbackInformationHook } from "./utils/getCallbackHook";
+import { type GetCallbackExpectedResponseHook, type GetCallbackCodeHook, type GetCallbackGeneralHook, type GetCallbackInformationHook } from "./utils/getCallbackHook";
 import { type HttpClientRouteResponse } from "./httpClientRoute";
 import { type SimplifyType } from "./utils/simplifyType";
 
@@ -63,8 +63,14 @@ export class PromiseRequest<
 						for (const hook of getGeneralHooks(this.hooks, 200)) {
 							hook.callback(response);
 						}
+						for (const hook of getExpectedResponseHooks(this.hooks)) {
+							hook.callback(response);
+						}
 					} else if (response.code >= 400 && response.code <= 499) {
 						for (const hook of getGeneralHooks(this.hooks, 400)) {
+							hook.callback(response);
+						}
+						for (const hook of getExpectedResponseHooks(this.hooks)) {
 							hook.callback(response);
 						}
 					} else if (response.code >= 500 && response.code <= 599) {
@@ -205,6 +211,19 @@ export class PromiseRequest<
 		return this;
 	}
 
+	public whenExpectedResponse(
+		callback: GetCallbackExpectedResponseHook<
+			Response<GenericRouteResponse>
+		>,
+	) {
+		this.hooks.add({
+			type: "expectedResponse",
+			callback: <never>callback,
+		});
+
+		return this;
+	}
+
 	public iWantInformation<
 		GenericInformation extends Extract<
 			Response<GenericRouteResponse>["information"],
@@ -319,6 +338,24 @@ export class PromiseRequest<
 		);
 	}
 
+	public iWantExpectedResponse() {
+		return this.then(
+			(response: Response) => {
+				if (
+					(response.code >= 200 && response.code <= 299)
+					|| (response.code >= 400 && response.code <= 499)
+				) {
+					return response;
+				} else {
+					throw new WrongResponseError(response, {
+						expect: "200 to 299 or 400 to 499",
+						receive: response.code.toString(),
+					});
+				}
+			},
+		);
+	}
+
 	public static fetch(definition: RequestDefinition): Promise<Response> {
 		const url = [
 			insertParamsInPath(definition.path, definition.params),
@@ -363,7 +400,10 @@ export class PromiseRequest<
 						body,
 						information: response.headers.get(definition.keyToInformation) || undefined,
 						code: response.status,
-						ok: response.ok,
+						ok: (response.status >= 200 && response.status <= 299)
+						|| (response.status >= 400 && response.status <= 499)
+							? response.ok
+							: null,
 						headers: response.headers,
 						type: response.type,
 						url: response.url,
