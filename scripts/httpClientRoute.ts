@@ -12,5 +12,5 @@ export interface HttpClientRouteResponse {
 	code: number;
 	information: undefined | string;
 	body: unknown;
-	ok: boolean;
+	ok: boolean | null;
 }

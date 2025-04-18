@@ -75,6 +75,30 @@ const user = await client
 			>;
 		},
 	)
+	.whenExpectedResponse(
+		({ code, body, information }) => {
+			type check = ExpectType<
+				typeof body,
+				{
+					userId: string;
+					name: string;
+				} | undefined,
+				"strict"
+			>;
+
+			type check1 = ExpectType<
+				typeof code,
+				404 | 200,
+				"strict"
+			>;
+
+			type check2 = ExpectType<
+				typeof information,
+				"user.notFound" | "user.get",
+				"strict"
+			>;
+		},
+	)
 	.iWantInformation("user.get");
 
 type check = ExpectType<
@@ -246,6 +270,11 @@ type check3 = ExpectType<
 			information: "user.notFound";
 			body: undefined;
 			ok: false;
+		} | {
+			code: 500;
+			information: "server.error";
+			body: undefined;
+			ok: null;
 		};
 	},
 	"one-extends-two"
@@ -272,6 +301,11 @@ type check4 = ExpectType<
 			information: "user.notFound";
 			body: undefined;
 			ok: false;
+		} | {
+			code: 500;
+			information: "server.error";
+			body: undefined;
+			ok: null;
 		};
 	},
 	"one-extends-two"

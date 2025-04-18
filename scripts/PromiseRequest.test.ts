@@ -159,13 +159,19 @@ describe("PromiseRequest", () => {
 			spy.mockImplementation(() => Promise.resolve(<any>response));
 
 			const whenCode = vi.fn();
+			const whenMultiCode = vi.fn();
 			const whenInformation = vi.fn();
+			const whenMultiInformation = vi.fn();
 			const whenResponseSuccess = vi.fn();
+			const whenExpectedResponse = vi.fn();
 
 			const promise = new PromiseRequest(requestDefinition)
 				.whenCode("200", whenCode)
+				.whenCode(["200", "400"], whenMultiCode)
 				.whenInformation("key", whenInformation)
-				.whenResponseSuccess(whenResponseSuccess);
+				.whenInformation(["key", "other"], whenMultiInformation)
+				.whenResponseSuccess(whenResponseSuccess)
+				.whenExpectedResponse(whenExpectedResponse);
 
 			const whenCodeError = vi.fn();
 			const whenInformationError = vi.fn();
@@ -174,12 +180,18 @@ describe("PromiseRequest", () => {
 
 			const [
 				responseCode,
+				responseMultiCode,
 				responseInformation,
+				responseMultiInformation,
 				responseSuccess,
+				expectedResponse,
 			] = await Promise.all([
 				promise.iWantCode("200"),
+				promise.iWantCode(["200", "400"]),
 				promise.iWantInformation("key"),
+				promise.iWantInformation(["key", "other"]),
 				promise.iWantResponseSuccess(),
+				promise.iWantExpectedResponse(),
 				promise.iWantCode("400").catch(whenCodeError),
 				promise.iWantInformation("wrong").catch(whenInformationError),
 				promise.iWantRequestError().catch(whenResponseSuccessError),
@@ -189,6 +201,7 @@ describe("PromiseRequest", () => {
 			expect(whenCode).toHaveBeenLastCalledWith(response);
 			expect(whenInformation).toHaveBeenLastCalledWith(response);
 			expect(whenResponseSuccess).toHaveBeenLastCalledWith(response);
+			expect(whenExpectedResponse).toHaveBeenLastCalledWith(response);
 
 			expect(whenCodeError)
 				.toHaveBeenLastCalledWith(new WrongResponseError(<any>response, {
@@ -212,8 +225,11 @@ describe("PromiseRequest", () => {
 				}));
 
 			expect(responseCode).toBe(response);
+			expect(responseMultiCode).toBe(response);
 			expect(responseInformation).toBe(response);
+			expect(responseMultiInformation).toBe(response);
 			expect(responseSuccess).toBe(response);
+			expect(expectedResponse).toBe(response);
 
 			expect(requestDefinition.interceptor.request)
 				.toHaveBeenCalledWith(requestDefinition);
@@ -236,17 +252,20 @@ describe("PromiseRequest", () => {
 
 			const whenRequestError = vi.fn();
 			const whenResponseSuccess = vi.fn();
+			const whenExpectedResponse = vi.fn();
 
 			const promise = new PromiseRequest(requestDefinition)
-				.whenRequestError(whenRequestError);
+				.whenRequestError(whenRequestError)
+				.whenExpectedResponse(whenExpectedResponse);
 
-			const [RequestError, ResponseSuccess] = await Promise.all([
+			const [RequestError, expectedResponse] = await Promise.all([
 				promise.iWantRequestError(),
+				promise.iWantExpectedResponse(),
 				promise.iWantResponseSuccess().catch(whenResponseSuccess),
-
 			]);
 
 			expect(whenRequestError).toHaveBeenLastCalledWith(response);
+			expect(whenExpectedResponse).toHaveBeenLastCalledWith(response);
 			expect(whenResponseSuccess)
 				.toHaveBeenLastCalledWith(new WrongResponseError(<any>response, {
 					expect: "200 to 299",
@@ -254,6 +273,7 @@ describe("PromiseRequest", () => {
 				}));
 
 			expect(RequestError).toBe(response);
+			expect(expectedResponse).toBe(response);
 		});
 
 		it("expect code 500", async() => {
@@ -261,7 +281,7 @@ describe("PromiseRequest", () => {
 				body: undefined,
 				code: 500,
 				information: "key",
-				ok: false,
+				ok: null,
 				redirected: false,
 				type: "basic",
 				url: "http://toto.fr/users/23",
@@ -270,13 +290,21 @@ describe("PromiseRequest", () => {
 			spy.mockImplementation(() => Promise.resolve(<any>response));
 
 			const whenServerError = vi.fn();
+			const whenExpectedResponseError = vi.fn();
 
 			const promise = new PromiseRequest(requestDefinition)
 				.whenServerError(whenServerError);
 
-			const serverError = await promise.iWantServerError();
+			const [serverError] = await Promise.all([
+				promise.iWantServerError(),
+				promise.iWantExpectedResponse().catch(whenExpectedResponseError),
+			]);
 
 			expect(whenServerError).toHaveBeenLastCalledWith(response);
+			expect(whenExpectedResponseError).toHaveBeenLastCalledWith(new WrongResponseError(<any>response, {
+				expect: "200 to 299 or 400 to 499",
+				receive: "500",
+			}));
 
 			expect(serverError).toBe(response);
 		});

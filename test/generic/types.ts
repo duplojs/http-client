@@ -17,6 +17,11 @@ export type Routes = | {
 		information: "user.notFound";
 		body: undefined;
 		ok: false;
+	} | {
+		code: 500;
+		information: "server.error";
+		body: undefined;
+		ok: null;
 	};
 } | {
 	method: "POST";

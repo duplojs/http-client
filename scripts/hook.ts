@@ -42,7 +42,15 @@ export interface GeneralHook<
 	value: 200 | 400 | 500;
 }
 
-export type Hook = InformationHook | CodeHook | ErrorHook | GeneralHook;
+export interface ExpectedResponseHook<
+	GenericResponse extends Response = Response,
+> extends BaseHooks<
+		"expectedResponse",
+		(response: GenericResponse) => void
+	> {
+}
+
+export type Hook = InformationHook | CodeHook | ErrorHook | GeneralHook | ExpectedResponseHook;
 
 export type Hooks = Set<Hook>;
 
@@ -98,4 +106,10 @@ export function getErrorHooks(
 	hooks: Hooks,
 ) {
 	return getHook(hooks, "error");
+}
+
+export function getExpectedResponseHooks(
+	hooks: Hooks,
+) {
+	return getHook(hooks, "expectedResponse");
 }

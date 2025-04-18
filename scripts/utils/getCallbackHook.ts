@@ -1,4 +1,4 @@
-import { type GeneralHook, type CodeHook, type InformationHook } from "@scripts/hook";
+import { type GeneralHook, type CodeHook, type InformationHook, type ExpectedResponseHook } from "@scripts/hook";
 import { type Response } from "@scripts/PromiseRequest";
 import { type GetResponseByStatus, type GetResponseByCode, type GetResponseByInformation } from "./getResponse";
 
@@ -29,5 +29,14 @@ export type GetCallbackGeneralHook<
 	GetResponseByStatus<
 		GenericResponse,
 		GenericStatus
+	>
+>["callback"];
+
+export type GetCallbackExpectedResponseHook<
+	GenericResponse extends Response,
+> = ExpectedResponseHook<
+	GetResponseByStatus<
+		GenericResponse,
+		boolean
 	>
 >["callback"];
