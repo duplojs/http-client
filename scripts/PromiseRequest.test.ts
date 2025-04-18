@@ -47,7 +47,7 @@ describe("PromiseRequest", () => {
 				test: "ok",
 			},
 			hooks: new Set<any>(),
-			interceptor: {
+			interceptors: {
 				request: (req: any) => req,
 				response: (res: any) => res,
 			},
@@ -134,7 +134,7 @@ describe("PromiseRequest", () => {
 			},
 			hooks: new Set<any>(),
 			body: undefined,
-			interceptor: {
+			interceptors: {
 				request: vi.fn((req: any) => req),
 				response: vi.fn((res: any) => res),
 			},
@@ -231,9 +231,9 @@ describe("PromiseRequest", () => {
 			expect(responseSuccess).toBe(response);
 			expect(expectedResponse).toBe(response);
 
-			expect(requestDefinition.interceptor.request)
+			expect(requestDefinition.interceptors.request)
 				.toHaveBeenCalledWith(requestDefinition);
-			expect(requestDefinition.interceptor.response)
+			expect(requestDefinition.interceptors.response)
 				.toHaveBeenCalledWith(response);
 		});
 

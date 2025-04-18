@@ -1,5 +1,5 @@
 import { type Hooks } from "./hook";
-import { type Interceptor, PromiseRequest } from "./PromiseRequest";
+import { type Interceptors, PromiseRequest } from "./PromiseRequest";
 import { type HttpClientRoute } from "./httpClientRoute";
 import { type GetResponseFromRequest, type GetRouteByAttribute } from "./utils/getRoute";
 import { type ObjectCanBeEmpty } from "./utils/objectCanBeEmpty";
@@ -52,7 +52,14 @@ export class HttpClient<
 
 	public hooks: Hooks = new Set();
 
-	public interceptor: Interceptor = {
+	/**
+	 * @deprecated use interceptors
+	 */
+	public get interceptor() {
+		return this.interceptors;
+	}
+
+	public interceptors: Interceptors = {
 		request: (request) => request,
 		response: (response) => response,
 	};
@@ -70,9 +77,9 @@ export class HttpClient<
 	}
 
 	public setInterceptor<
-		GenericKey extends keyof Interceptor,
-	>(key: GenericKey, callback: Interceptor[GenericKey]) {
-		this.interceptor[key] = callback;
+		GenericKey extends keyof Interceptors,
+	>(key: GenericKey, callback: Interceptors[GenericKey]) {
+		this.interceptors[key] = callback;
 
 		return this;
 	}
@@ -123,7 +130,7 @@ export class HttpClient<
 			body,
 			keyToInformation: this.keyToInformation,
 			hooks: this.hooks,
-			interceptor: this.interceptor,
+			interceptors: this.interceptors,
 		});
 	}
 

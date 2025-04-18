@@ -8,7 +8,7 @@ import { type GetCallbackExpectedResponseHook, type GetCallbackCodeHook, type Ge
 import { type HttpClientRouteResponse } from "./httpClientRoute";
 import { type SimplifyType } from "./utils/simplifyType";
 
-export interface Interceptor {
+export interface Interceptors {
 	request(request: RequestDefinition): RequestDefinition | Promise<RequestDefinition>;
 	response(response: Response): Response | Promise<Response>;
 }
@@ -24,7 +24,7 @@ export interface RequestDefinition {
 	query?: Partial<Record<string, string | string[] | number>>;
 	body?: unknown;
 	hooks: Hooks;
-	interceptor: Interceptor;
+	interceptors: Interceptors;
 }
 
 export type Response<
@@ -55,9 +55,9 @@ export class PromiseRequest<
 		super(
 			(resolve, reject) => void Promise
 				.resolve(definition)
-				.then(definition.interceptor.request)
+				.then(definition.interceptors.request)
 				.then(PromiseRequest.fetch)
-				.then(definition.interceptor.response)
+				.then(definition.interceptors.response)
 				.then((response) => {
 					if (response.code >= 200 && response.code <= 299) {
 						for (const hook of getGeneralHooks(this.hooks, 200)) {

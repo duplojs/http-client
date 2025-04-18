@@ -18,15 +18,15 @@ describe("httpClient", () => {
 		expect(client.baseUrl).toBe("https://localhost:3000/test");
 		expect(client.keyToInformation).toBe("info");
 
-		expect(client.interceptor.request(<any>"test")).toBe("test");
-		expect(client.interceptor.response(<any>"test")).toBe("test");
+		expect(client.interceptors.request(<any>"test")).toBe("test");
+		expect(client.interceptors.response(<any>"test")).toBe("test");
 
 		const cb = (req: any) => req;
 		client.setInterceptor("request", cb);
 		client.setInterceptor("response", cb);
 
-		expect(client.interceptor.request).toBe(cb);
-		expect(client.interceptor.response).toBe(cb);
+		expect(client.interceptors.request).toBe(cb);
+		expect(client.interceptors.response).toBe(cb);
 	});
 
 	it("request", () => {
@@ -58,7 +58,7 @@ describe("httpClient", () => {
 				toto: "tatat",
 			},
 			hooks: new Set(),
-			interceptor: client.interceptor,
+			interceptors: client.interceptors,
 			keyToInformation: "information",
 			mode: "cors",
 			params: {
@@ -84,7 +84,7 @@ describe("httpClient", () => {
 			body: undefined,
 			headers: {},
 			hooks: new Set(),
-			interceptor: client.interceptor,
+			interceptors: client.interceptors,
 			keyToInformation: "information",
 			method: "GET",
 			params: {},
@@ -109,7 +109,7 @@ describe("httpClient", () => {
 			body: "toto",
 			headers: {},
 			hooks: new Set(),
-			interceptor: client.interceptor,
+			interceptors: client.interceptors,
 			keyToInformation: "information",
 			method: "POST",
 			params: {},
@@ -134,7 +134,7 @@ describe("httpClient", () => {
 			body: "toto",
 			headers: {},
 			hooks: new Set(),
-			interceptor: client.interceptor,
+			interceptors: client.interceptors,
 			keyToInformation: "information",
 			method: "PUT",
 			params: {},
@@ -159,7 +159,7 @@ describe("httpClient", () => {
 			body: "toto",
 			headers: {},
 			hooks: new Set(),
-			interceptor: client.interceptor,
+			interceptors: client.interceptors,
 			keyToInformation: "information",
 			method: "PATCH",
 			params: {},
@@ -179,7 +179,7 @@ describe("httpClient", () => {
 			body: undefined,
 			headers: {},
 			hooks: new Set(),
-			interceptor: client.interceptor,
+			interceptors: client.interceptors,
 			keyToInformation: "information",
 			method: "DELETE",
 			params: {},
