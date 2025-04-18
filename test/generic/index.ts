@@ -249,6 +249,37 @@ type check2 = ExpectType<
 	"strict"
 >;
 
+const expectedResponse = await client
+	.get("/users/{userId}", { params: { userId: "1" } })
+	.iWantExpectedResponse();
+
+type check5 = ExpectType<
+	typeof expectedResponse,
+	| {
+		code: 200;
+		information: "user.get";
+		body: {
+			userId: string;
+			name: string;
+		};
+		ok: true;
+		headers: Headers;
+		type: ResponseType;
+		url: string;
+		redirected: boolean;
+	} | {
+		code: 404;
+		information: "user.notFound";
+		body: undefined;
+		ok: false;
+		headers: Headers;
+		type: ResponseType;
+		url: string;
+		redirected: boolean;
+	},
+	"strict"
+>;
+
 type check3 = ExpectType<
 	RemovePrefix<Routes, "/us">,
 	{

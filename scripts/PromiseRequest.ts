@@ -338,14 +338,19 @@ export class PromiseRequest<
 		);
 	}
 
-	public iWantExpectedResponse() {
+	public iWantExpectedResponse(): Promise<
+		GetResponseByStatus<
+			Response<GenericRouteResponse>,
+			boolean
+		>
+	> {
 		return this.then(
 			(response: Response) => {
 				if (
 					(response.code >= 200 && response.code <= 299)
 					|| (response.code >= 400 && response.code <= 499)
 				) {
-					return response;
+					return <never>response;
 				} else {
 					throw new WrongResponseError(response, {
 						expect: "200 to 299 or 400 to 499",
