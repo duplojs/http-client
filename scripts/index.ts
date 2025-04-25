@@ -20,6 +20,7 @@ export * from "./utils/objectCanBeEmpty";
 export * from "./utils/optionalUndefined";
 export * from "./utils/queryToString";
 export * from "./utils/removePrefix";
+export * from "./utils/requestError";
 export * from "./utils/simplifyType";
 
 export * from "./typesCodegen/expectCodegenRoute";
