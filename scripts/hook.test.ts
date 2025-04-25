@@ -76,7 +76,7 @@ describe("hook", () => {
 		for (const hook of getErrorHooks(hooks)) {
 			expect(hook.type).toBe("error");
 
-			hook.callback(<any>undefined);
+			hook.callback(<any>undefined, {} as never);
 		}
 
 		expect(spy).toHaveBeenCalledOnce();
