@@ -1,5 +1,6 @@
 import { PromiseRequest } from "./PromiseRequest";
 import { getBody } from "./utils/getBody";
+import { RequestError } from "./utils/requestError";
 import { WrongResponseError } from "./WrongResponseError";
 
 vi.mock(
@@ -113,6 +114,17 @@ describe("PromiseRequest", () => {
 				type: "basic",
 				url: "http://toto.fr/users/23",
 			});
+		});
+
+		it("fetch Error", async() => {
+			spy.mockImplementation(() => Promise.reject(new Error("my Error")));
+
+			const result = await PromiseRequest.fetch(requestDefinition)
+				.catch((error) => error);
+
+			expect(result).toEqual(
+				new RequestError(new Error("my Error"), requestDefinition),
+			);
 		});
 	});
 
@@ -331,7 +343,7 @@ describe("PromiseRequest", () => {
 				.whenError(whenError)
 				.catch(() => void undefined);
 
-			expect(whenError).toHaveBeenLastCalledWith(new Error());
+			expect(whenError).toHaveBeenLastCalledWith(new Error(), requestDefinition);
 		});
 	});
 });

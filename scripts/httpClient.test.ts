@@ -18,6 +18,7 @@ describe("httpClient", () => {
 		expect(client.baseUrl).toBe("https://localhost:3000/test");
 		expect(client.keyToInformation).toBe("info");
 
+		expect(client.interceptors).toBe(client.interceptor);
 		expect(client.interceptors.request(<any>"test")).toBe("test");
 		expect(client.interceptors.response(<any>"test")).toBe("test");
 

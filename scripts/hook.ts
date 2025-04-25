@@ -1,4 +1,4 @@
-import { type Response } from "./PromiseRequest";
+import { type Response, type RequestDefinition } from "./PromiseRequest";
 
 export interface BaseHooks<
 	GenericHookType extends string,
@@ -28,7 +28,7 @@ export interface CodeHook<
 
 export interface ErrorHook extends BaseHooks<
 	"error",
-	(error: unknown) => void
+	(error: unknown, requestDefinition: RequestDefinition) => void
 > {
 
 }

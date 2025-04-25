@@ -7,6 +7,7 @@ import { WrongResponseError } from "./WrongResponseError";
 import { type GetCallbackExpectedResponseHook, type GetCallbackCodeHook, type GetCallbackGeneralHook, type GetCallbackInformationHook } from "./utils/getCallbackHook";
 import { type HttpClientRouteResponse } from "./httpClientRoute";
 import { type SimplifyType } from "./utils/simplifyType";
+import { RequestError } from "./utils/requestError";
 
 export interface Interceptors {
 	request(request: RequestDefinition): RequestDefinition | Promise<RequestDefinition>;
@@ -92,9 +93,9 @@ export class PromiseRequest<
 					return <Response<GenericRouteResponse>>response;
 				})
 				.then(resolve)
-				.catch((error) => {
+				.catch((error: unknown) => {
 					for (const hook of getErrorHooks(this.hooks)) {
-						hook.callback(error);
+						hook.callback(error, definition);
 					}
 
 					reject(error);
@@ -414,6 +415,11 @@ export class PromiseRequest<
 						url: response.url,
 						redirected: response.redirected,
 					})),
+			)
+			.catch(
+				(error) => {
+					throw new RequestError(error, definition);
+				},
 			);
 	}
 }
