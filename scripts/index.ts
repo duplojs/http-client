@@ -10,6 +10,7 @@ export * from "./utils/findHttpClientRoute";
 export * from "./utils/findHttpClientRouteResponse";
 export * from "./utils/getBody";
 export * from "./utils/getRoute";
+export * from "./utils/httpClientRequestInit";
 export * from "./utils/getCallbackHook";
 export * from "./utils/getResponse";
 export * from "./utils/getRoute";
