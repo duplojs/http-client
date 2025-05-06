@@ -8,9 +8,10 @@ import { type GetCallbackExpectedResponseHook, type GetCallbackCodeHook, type Ge
 import { type HttpClientRouteResponse } from "./httpClientRoute";
 import { type SimplifyType } from "./utils/simplifyType";
 import { RequestError } from "./utils/requestError";
+import { type HttpClientRequestInit } from "./utils/httpClientRequestInit";
 
 export interface Interceptors {
-	request(request: RequestDefinition): RequestDefinition | Promise<RequestDefinition>;
+	request(requestDefinition: RequestDefinition): RequestDefinition | Promise<RequestDefinition>;
 	response(response: Response): Response | Promise<Response>;
 }
 
@@ -19,7 +20,7 @@ export interface RequestDefinition {
 	path: string;
 	baseUrl: string;
 	keyToInformation: string;
-	paramsRequest: Omit<RequestInit, "headers">;
+	paramsRequest: Omit<HttpClientRequestInit, "headers">;
 	headers?: Partial<Record<string, string>>;
 	params?: Partial<Record<string, string | number>>;
 	query?: Partial<Record<string, string | string[] | number>>;
@@ -36,6 +37,8 @@ export type Response<
 		type: ResponseType;
 		url: string;
 		redirected: boolean;
+		raw: globalThis.Response;
+		requestDefinition: RequestDefinition;
 	}
 >;
 
@@ -51,14 +54,14 @@ export class PromiseRequest<
 	}
 
 	public constructor(
-		public definition: RequestDefinition,
+		public requestDefinition: RequestDefinition,
 	) {
 		super(
 			(resolve, reject) => void Promise
-				.resolve(definition)
-				.then(definition.interceptors.request)
+				.resolve(requestDefinition)
+				.then(requestDefinition.interceptors.request)
 				.then(PromiseRequest.fetch)
-				.then(definition.interceptors.response)
+				.then((response) => requestDefinition.interceptors.response(response))
 				.then((response) => {
 					if (response.code >= 200 && response.code <= 299) {
 						for (const hook of getGeneralHooks(this.hooks, 200)) {
@@ -95,7 +98,7 @@ export class PromiseRequest<
 				.then(resolve)
 				.catch((error: unknown) => {
 					for (const hook of getErrorHooks(this.hooks)) {
-						hook.callback(error, definition);
+						hook.callback(error, requestDefinition);
 					}
 
 					reject(error);
@@ -103,7 +106,7 @@ export class PromiseRequest<
 				.catch(reject),
 		);
 
-		this.hooks = new Set(definition.hooks);
+		this.hooks = new Set(requestDefinition.hooks);
 	}
 
 	public whenInformation<
@@ -362,49 +365,49 @@ export class PromiseRequest<
 		);
 	}
 
-	public static fetch(definition: RequestDefinition): Promise<Response> {
+	public static fetch(requestDefinition: RequestDefinition): Promise<Response> {
 		const url = [
-			insertParamsInPath(definition.path, definition.params),
-			queryToString(definition.query),
+			insertParamsInPath(requestDefinition.path, requestDefinition.params),
+			queryToString(requestDefinition.query),
 		]
 			.filter(Boolean)
 			.join("?");
 
-		if (definition.body) {
+		if (requestDefinition.body) {
 			const headers: RequestDefinition["headers"] = {
-				...definition.headers,
+				...requestDefinition.headers,
 			};
 
 			if (!headers["content-type"]) {
-				if (typeof definition.body === "string" || typeof definition.body === "number") {
+				if (typeof requestDefinition.body === "string" || typeof requestDefinition.body === "number") {
 					headers["content-type"] = "text/plain; charset=utf-8";
 				} else if (
-					definition.body
-					&& typeof definition.body === "object"
-					&& definition.body.constructor.name === "Object"
+					requestDefinition.body
+					&& typeof requestDefinition.body === "object"
+					&& requestDefinition.body.constructor.name === "Object"
 				) {
 					headers["content-type"] = "application/json; charset=utf-8";
-					definition.body = JSON.stringify(definition.body);
+					requestDefinition.body = JSON.stringify(requestDefinition.body);
 				}
 			}
 
-			definition.headers = headers;
+			requestDefinition.headers = headers;
 		}
 
 		return fetch(
-			`${definition.baseUrl}${url}`,
+			`${requestDefinition.baseUrl}${url}`,
 			{
-				...definition.paramsRequest,
-				headers: <any>definition.headers,
-				method: definition.method,
-				body: <any>definition.body,
+				...requestDefinition.paramsRequest,
+				headers: <any>requestDefinition.headers,
+				method: requestDefinition.method,
+				body: <any>requestDefinition.body,
 			},
 		)
 			.then(
 				(response) => getBody(response)
 					.then((body) => ({
 						body,
-						information: response.headers.get(definition.keyToInformation) || undefined,
+						information: response.headers.get(requestDefinition.keyToInformation) || undefined,
 						code: response.status,
 						ok: (response.status >= 200 && response.status <= 299)
 						|| (response.status >= 400 && response.status <= 499)
@@ -414,11 +417,13 @@ export class PromiseRequest<
 						type: response.type,
 						url: response.url,
 						redirected: response.redirected,
+						raw: response,
+						requestDefinition,
 					})),
 			)
 			.catch(
 				(error) => {
-					throw new RequestError(error, definition);
+					throw new RequestError(error, requestDefinition);
 				},
 			);
 	}

@@ -4,6 +4,7 @@ import { type HttpClientRoute } from "./httpClientRoute";
 import { type GetResponseFromRequest, type GetRouteByAttribute } from "./utils/getRoute";
 import { type ObjectCanBeEmpty } from "./utils/objectCanBeEmpty";
 import { type SimplifyType } from "./utils/simplifyType";
+import { type HttpClientRequestInit } from "./utils/httpClientRequestInit";
 
 export interface InitHttpClient {
 	baseUrl?: string;
@@ -14,8 +15,8 @@ export type DefaultRequest = Omit<Partial<Request>, "path" | "method" | "body">;
 
 export type Request<
 	GenericRoute extends HttpClientRoute = HttpClientRoute,
-> = Omit<GenericRoute, "response">
-	& Omit<RequestInit, "method" | "body" | "headers">
+> = & Omit<GenericRoute, "response">
+	& Omit<HttpClientRequestInit, "method" | "body" | "headers">
 	& Omit<HttpClientRoute, keyof GenericRoute | "response">;
 
 export type RequestParams<

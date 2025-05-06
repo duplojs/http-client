@@ -1,6 +1,6 @@
 import { HttpClient } from "@scripts/httpClient";
 import { type Routes } from "./types";
-import { type Response } from "@scripts/PromiseRequest";
+import { type RequestDefinition, type Response } from "@scripts/PromiseRequest";
 import { type ExpectType } from "@duplojs/utils";
 import { type RemovePrefix } from "@scripts/index";
 import { type AddPrefix } from "@scripts/utils/addPrefix";
@@ -115,6 +115,8 @@ type check = ExpectType<
 		type: ResponseType;
 		url: string;
 		redirected: boolean;
+		raw: globalThis.Response;
+		requestDefinition: RequestDefinition;
 	},
 	"strict"
 >;
@@ -184,6 +186,8 @@ type check1 = ExpectType<
 		type: ResponseType;
 		url: string;
 		redirected: boolean;
+		raw: globalThis.Response;
+		requestDefinition: RequestDefinition;
 	},
 	"strict"
 >;
@@ -267,6 +271,8 @@ type check5 = ExpectType<
 		type: ResponseType;
 		url: string;
 		redirected: boolean;
+		raw: globalThis.Response;
+		requestDefinition: RequestDefinition;
 	} | {
 		code: 404;
 		information: "user.notFound";
@@ -276,6 +282,8 @@ type check5 = ExpectType<
 		type: ResponseType;
 		url: string;
 		redirected: boolean;
+		raw: globalThis.Response;
+		requestDefinition: RequestDefinition;
 	},
 	"strict"
 >;

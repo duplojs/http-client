@@ -1,4 +1,4 @@
-import { PromiseRequest } from "./PromiseRequest";
+import { PromiseRequest, type RequestDefinition } from "./PromiseRequest";
 import { getBody } from "./utils/getBody";
 import { RequestError } from "./utils/requestError";
 import { WrongResponseError } from "./WrongResponseError";
@@ -344,6 +344,37 @@ describe("PromiseRequest", () => {
 				.catch(() => void undefined);
 
 			expect(whenError).toHaveBeenLastCalledWith(new Error(), requestDefinition);
+		});
+
+		it("override interceptor request", async() => {
+			const response = {
+				body: undefined,
+				code: 200,
+				information: "key",
+				ok: true,
+				redirected: false,
+				type: "basic",
+				url: "http://toto.fr/users/23",
+			};
+			const spyInterceptorResponse = vi.fn((res: any) => res);
+
+			const requestDefinitionWithInterceptor: RequestDefinition = {
+				...requestDefinition,
+				interceptors: {
+					...requestDefinition.interceptors,
+					request: (request) => {
+						request.interceptors.response = spyInterceptorResponse;
+
+						return request;
+					},
+				},
+			};
+
+			spy.mockImplementation(() => Promise.resolve(<any>response));
+
+			await new PromiseRequest(requestDefinitionWithInterceptor);
+
+			expect(spyInterceptorResponse).toBeCalledWith(response);
 		});
 	});
 });
